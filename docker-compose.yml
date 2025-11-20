@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: feature-voting-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: feature_voting
+    ports:
+      - '51143:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d feature_voting']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - feature-voting-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  feature-voting-network:
+    driver: bridge
